@@ -5,7 +5,7 @@ QT       += core
 
 TARGET = Lexilla
 TEMPLATE = lib
-CONFIG += lib_bundle
+CONFIG += lib
 CONFIG += c++1z
 
 VERSION = 5.1.3
@@ -25,8 +25,6 @@ DEFINES += _CRT_SECURE_NO_DEPRECATE=1
 CONFIG(release, debug|release) {
     DEFINES += NDEBUG=1
 }
-
-DESTDIR = ../bin
 
 macx {
 	QMAKE_LFLAGS_SONAME = -Wl,-install_name,@executable_path/../Frameworks/
