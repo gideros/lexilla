@@ -378,6 +378,8 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	int style = initStyle;
 	int styleNext = styler.StyleAt(startPos);
+	bool nextIsExpression = false;
+	int inTernary=0;
 
 	for (Sci_PositionU i = startPos; i < lengthDoc; i++) {
 		const char ch = chNext;
@@ -387,7 +389,7 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 		styleNext = styler.StyleAt(i + 1);
 		const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 		if (style == SCE_LUA_WORD) {
-			if (ch == 'i' || ch == 'd' || ch == 'f' || ch == 'e' || ch == 'r' || ch == 'u') {
+            if ((ch == 'i' || ch == 'd' || ch == 'f' || ch == 'e' || ch == 'r' || ch == 'u' || ch=='w' )&&(stylePrev != style)) {
 				char s[10] = "";
 				for (Sci_PositionU j = 0; j < 8; j++) {
 					if (!iswordchar(styler[i + j])) {
@@ -396,19 +398,32 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 					s[j] = styler[i + j];
 					s[j + 1] = '\0';
 				}
-
-				if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || (strcmp(s, "function") == 0) || (strcmp(s, "repeat") == 0)) {
-					levelCurrent++;
+				if (nextIsExpression||inTernary) {
+                    nextIsExpression=false;
+					if (strcmp(s, "if") == 0) inTernary++;
+                    if (strcmp(s, "else") == 0) { inTernary--; nextIsExpression=true; }
 				}
-				if ((strcmp(s, "end") == 0) || (strcmp(s, "elseif") == 0) || (strcmp(s, "until") == 0)) {
-					levelCurrent--;
-				}
+				else {
+					if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || (strcmp(s, "function") == 0) || (strcmp(s, "repeat") == 0)) {
+						levelCurrent++;
+						if (strcmp(s, "if") != 0) nextIsExpression=false;
+					}
+					if ((strcmp(s, "end") == 0) || (strcmp(s, "elseif") == 0) || (strcmp(s, "until") == 0)) {
+						levelCurrent--;
+                    }
+                    if ((strcmp(s, "elseif") == 0) || (strcmp(s, "return") == 0) || (strcmp(s, "until") == 0) || (strcmp(s, "while") == 0))
+                        nextIsExpression=true;
+                }
 			}
+			else
+				nextIsExpression=false;
 		} else if (style == SCE_LUA_OPERATOR) {
+			nextIsExpression=true;
 			if (ch == '{' || ch == '(') {
 				levelCurrent++;
 			} else if (ch == '}' || ch == ')') {
 				levelCurrent--;
+				nextIsExpression=false;
 			}
 		} else if (style == SCE_LUA_LITERALSTRING || style == SCE_LUA_COMMENT) {
 			if (stylePrev != style) {
@@ -416,7 +431,10 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 			} else if (styleNext != style) {
 				levelCurrent--;
 			}
+			nextIsExpression=false;
 		}
+        else if (!(style == SCE_LUA_DEFAULT || style == SCE_LUA_COMMENTLINE || style == SCE_LUA_COMMENTDOC))
+			nextIsExpression=false;
 
 		if (atEOL) {
 			int lev = levelPrev;
