@@ -398,20 +398,19 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 					s[j] = styler[i + j];
 					s[j + 1] = '\0';
 				}
-				if (nextIsExpression||inTernary) {
+               if (nextIsExpression||inTernary) {
                     nextIsExpression=false;
 					if (strcmp(s, "if") == 0) inTernary++;
-                    if (strcmp(s, "else") == 0) { inTernary--; nextIsExpression=true; }
+                    if ((inTernary && strcmp(s, "else") == 0)) { inTernary--; nextIsExpression=true; }
 				}
 				else {
 					if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || (strcmp(s, "function") == 0) || (strcmp(s, "repeat") == 0)) {
 						levelCurrent++;
-						if (strcmp(s, "if") != 0) nextIsExpression=false;
 					}
-					if ((strcmp(s, "end") == 0) || (strcmp(s, "elseif") == 0) || (strcmp(s, "until") == 0)) {
+                    if ((strcmp(s, "end") == 0) || (strcmp(s, "until") == 0)) {
 						levelCurrent--;
                     }
-                    if ((strcmp(s, "elseif") == 0) || (strcmp(s, "return") == 0) || (strcmp(s, "until") == 0) || (strcmp(s, "while") == 0))
+                    if ((strcmp(s, "if") == 0) || (strcmp(s, "elseif") == 0) || (strcmp(s, "return") == 0) || (strcmp(s, "until") == 0) || (strcmp(s, "while") == 0))
                         nextIsExpression=true;
                 }
 			}
