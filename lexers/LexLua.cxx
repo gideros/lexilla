@@ -90,7 +90,7 @@ static void ColouriseLuaDoc(
 	bool foundGoto = false;
 
 	// Do not leak onto next line
-	if (initStyle == SCE_LUA_STRINGEOL || initStyle == SCE_LUA_COMMENTLINE || initStyle == SCE_LUA_PREPROCESSOR) {
+	if (initStyle == SCE_LUA_STRINGEOL || initStyle == SCE_LUA_COMMENTLINE || initStyle == SCE_LUA_PREPROCESSOR || initStyle == SCE_LUA_WORD5) {
 		initStyle = SCE_LUA_DEFAULT;
 	}
 
@@ -213,7 +213,14 @@ static void ColouriseLuaDoc(
 				}
 				sc.SetState(SCE_LUA_DEFAULT);
 			}
-		} else if (sc.state == SCE_LUA_COMMENTLINE || sc.state == SCE_LUA_PREPROCESSOR) {
+		} else if (sc.state == SCE_LUA_COMMENTLINE) {
+			if (sc.Match("!Region") || sc.Match("!EndRegion")) {
+				sc.ForwardSetState(SCE_LUA_WORD5);
+			}
+			if (sc.atLineEnd) {
+				sc.ForwardSetState(SCE_LUA_DEFAULT);
+			}
+		} else if (sc.state == SCE_LUA_COMMENTLINE || sc.state == SCE_LUA_PREPROCESSOR || sc.state == SCE_LUA_WORD5) {
 			if (sc.atLineEnd) {
 				sc.ForwardSetState(SCE_LUA_DEFAULT);
 			}
@@ -388,10 +395,10 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
 		const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-		if (style == SCE_LUA_WORD) {
-            if ((ch == 'i' || ch == 'd' || ch == 'f' || ch == 'e' || ch == 'r' || ch == 'u' || ch=='w' )&&(stylePrev != style)) {
-				char s[10] = "";
-				for (Sci_PositionU j = 0; j < 8; j++) {
+		if (style == SCE_LUA_WORD || style == SCE_LUA_WORD5) {
+            if ((ch == 'i' || ch == 'd' || ch == 'f' || ch == 'e' || ch == 'r' || ch == 'u' || ch=='w' || ch =='R' || ch == 'E')&&(stylePrev != style)) {
+				char s[11] = "";
+				for (Sci_PositionU j = 0; j < 9; j++) {
 					if (!iswordchar(styler[i + j])) {
 						break;
 					}
@@ -404,10 +411,10 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
                     if ((inTernary && strcmp(s, "else") == 0)) { inTernary--; nextIsExpression=true; }
 				}
 				else {
-					if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || (strcmp(s, "function") == 0) || (strcmp(s, "repeat") == 0)) {
+					if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || (strcmp(s, "function") == 0) || (strcmp(s, "repeat") == 0) || (strcmp(s, "Region") == 0)) {
 						levelCurrent++;
 					}
-                    if ((strcmp(s, "end") == 0) || (strcmp(s, "until") == 0)) {
+                    if ((strcmp(s, "end") == 0) || (strcmp(s, "until") == 0) || (strcmp(s, "EndRegion") == 0)) {
 						levelCurrent--;
                     }
                     if ((strcmp(s, "if") == 0) || (strcmp(s, "elseif") == 0) || (strcmp(s, "return") == 0) || (strcmp(s, "until") == 0) || (strcmp(s, "while") == 0))
