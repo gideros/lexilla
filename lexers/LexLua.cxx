@@ -405,13 +405,19 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 					s[j] = styler[i + j];
 					s[j + 1] = '\0';
 				}
-               if (nextIsExpression||inTernary) {
+                bool isFunction=(strcmp(s, "function") == 0);
+                if (isFunction) {
+                    //Functions are actually expressions, but we go into trouble when used in ternary ops
+                    //Assume they are never used in ternary ops in practice, and process them as non expressions
+                    nextIsExpression=false;
+                }
+                if (nextIsExpression||inTernary) {
                     nextIsExpression=false;
 					if (strcmp(s, "if") == 0) inTernary++;
                     if ((inTernary && strcmp(s, "else") == 0)) { inTernary--; nextIsExpression=true; }
 				}
 				else {
-					if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || (strcmp(s, "function") == 0) || (strcmp(s, "repeat") == 0) || (strcmp(s, "Region") == 0)) {
+                    if ((strcmp(s, "if") == 0) || (strcmp(s, "do") == 0) || isFunction || (strcmp(s, "repeat") == 0) || (strcmp(s, "Region") == 0)) {
 						levelCurrent++;
 					}
                     if ((strcmp(s, "end") == 0) || (strcmp(s, "until") == 0) || (strcmp(s, "EndRegion") == 0)) {
