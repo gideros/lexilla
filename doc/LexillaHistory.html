@@ -575,31 +575,130 @@
 	<td>Antonio Cebrián</td>
 	<td>David Yu Yang</td>
 	<td>Arkadiusz Michalski</td>
+      </tr><tr>
+	<td>Red_M</td>
+	<td>cdbdev</td>
+	<td>Andrey Smolyakov</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla517.zip">Release 5.1.7</a>
+    </h3>
+    <ul>
+	<li>
+	Released 31 March 2022.
+	</li>
+	<li>
+	Add LexAccessor::StyleIndexAt to retrieve style values as unsigned to handle styles > 127 better.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/61">Issue #61</a>.
+	</li>
+	<li>
+	HTML: Fix folding of JavaScript doc comments.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2219/">Bug #2219</a>.
+	</li>
+	<li>
+	Matlab: add "classdef" and "spmd" to folding keywords.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/70">Pull request #70</a>.
+	</li>
+	<li>
+	Matlab: handle "arguments" contextual keyword.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/70">Pull request #70</a>.
+	</li>
+	<li>
+	Ruby: fix character sequence "?\\#" to not include '#' in SCE_RB_NUMBER as only second '\' is quoted.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/69">Issue #69</a>.
+	</li>
+	<li>
+	Ruby: improve styling of ternary expressions as commonly used.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/69">Issue #69</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla516.zip">Release 5.1.6</a>
+    </h3>
+    <ul>
+	<li>
+	Released 31 March 2022.
+	</li>
+	<li>
+	Implement conditional statements "if" and "match", comparison function "$(=", and "FileNameExt"
+	property in TestLexers to allow varying lexer properties over different files.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/62">Issue #62</a>.
+	</li>
+	<li>
+	Add LexAccessor::BufferStyleAt to retrieve style values to simplify logic and
+	improve performance.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/54">Issue #54</a>.
+	</li>
+	<li>
+	Markdown: Optionally style all of Markdown header lines.
+	Enabled with lexer.markdown.header.eolfill=1.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/60">Issue #60</a>.
+	</li>
+	<li>
+	Ruby: Fix operator method styling so next word not treated as method name.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/65">Issue #65</a>.
+	</li>
+	<li>
+	Ruby: Fix folding for Ruby 3 endless method definition.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/65">Issue #65</a>.
+	</li>
+	<li>
+	Ruby: Fold string array SCE_RB_STRING_QW.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/65">Issue #65</a>.
+	</li>
+	<li>
+	Ruby: Fix final \n in indented heredoc to be SCE_RB_HERE_Q.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/66">Issue #66</a>.
+	</li>
+	<li>
+	Ruby: Fix heredoc recognition when '.' and ',' used in method calls and after SCE_RB_GLOBAL.
+	Classify word after heredoc delimiter instead of styling as keyword.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/67">Issue #67</a>.
+	</li>
+	<li>
+	Ruby: Improve method highlighting so method name is styled as SCE_RB_DEFNAME and class/object
+	is styled appropriately.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/68">Issue #68</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/lexilla515.zip">Release 5.1.5</a>
     </h3>
     <ul>
 	<li>
-	Released 7 December 2021.
+	Released 9 February 2022.
 	</li>
 	<li>
-	Recognise batch "::" comments when second command on line.
+	Bash: Treat \r\n line ends the same as \n. This makes testing easier.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/57">Issue #57</a>.
+	</li>
+	<li>
+	Batch: Recognise "::" comments when second command on line.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2304/">Bug #2304</a>.
 	</li>
 	<li>
-	Recognise F# format specifiers in interpolated strings and %B for binary.
+	F#: Recognise format specifiers in interpolated strings and %B for binary.
 	<a href="https://github.com/ScintillaOrg/lexilla/issues/46">Issue #46</a>.
 	</li>
 	<li>
-	Fix folding inside script blocks in HTML.
-	<a href="https://github.com/ScintillaOrg/lexilla/issues/47">Issue #47</a>.
+	F#: More accurate line-based folding.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/56">Issue #56</a>.
 	</li>
 	<li>
-	Fix multiline comments in Inno Setup code.
+	HTML: Fix folding inside script blocks.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/47">Issue #47</a>,
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/53">Issue #53</a>.
+	</li>
+	<li>
+	Inno Setup: Fix multiline comments in code.
 	<a href="https://github.com/ScintillaOrg/lexilla/issues/44">Issue #44</a>.
+	</li>
+	<li>
+	Python: Add attribute style with properties lexer.python.identifier.attributes and
+	lexer.python.decorator.attributes.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/49">Pull request #49</a>.
 	</li>
 	<li>
 	Allow choice of object file directory with makefile by setting DIR_O.

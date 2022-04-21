@@ -14,10 +14,12 @@
 **.css text
 **.html text
 **.bat text
+**.bsh text
 **.mak text
 **.def text
 **.manifest text
 **.properties text
+**.session text
 **.styled text
 **.folded text
 **.adoc text
@@ -29,6 +31,7 @@
 **.gd text
 **.iss text
 **.jl text
+**.json text
 **.lua text
 **.matlab text
 **.ml text
