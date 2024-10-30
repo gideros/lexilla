@@ -90,7 +90,7 @@ static void ColouriseLuaDoc(
 	bool foundGoto = false;
 
 	// Do not leak onto next line
-	if (initStyle == SCE_LUA_STRINGEOL || initStyle == SCE_LUA_COMMENTLINE || initStyle == SCE_LUA_PREPROCESSOR || initStyle == SCE_LUA_WORD5) {
+    if (initStyle == SCE_LUA_STRINGEOL || initStyle == SCE_LUA_COMMENTLINE || initStyle == SCE_LUA_PREPROCESSOR || initStyle == SCE_LUA_WORD5 || initStyle == SCE_LUA_ATTRIBUTE) {
 		initStyle = SCE_LUA_DEFAULT;
 	}
 
@@ -220,7 +220,7 @@ static void ColouriseLuaDoc(
 			if (sc.atLineEnd) {
 				sc.ForwardSetState(SCE_LUA_DEFAULT);
 			}
-		} else if (sc.state == SCE_LUA_COMMENTLINE || sc.state == SCE_LUA_PREPROCESSOR || sc.state == SCE_LUA_WORD5) {
+        } else if (sc.state == SCE_LUA_COMMENTLINE || sc.state == SCE_LUA_PREPROCESSOR || sc.state == SCE_LUA_WORD5 || sc.state == SCE_LUA_ATTRIBUTE) {
 			if (sc.atLineEnd) {
 				sc.ForwardSetState(SCE_LUA_DEFAULT);
 			}
@@ -363,9 +363,11 @@ static void ColouriseLuaDoc(
 				} else {
 					sc.Forward();
 				}
-			} else if (sc.atLineStart && sc.Match('$')) {
-				sc.SetState(SCE_LUA_PREPROCESSOR);	// Obsolete since Lua 4.0, but still in old code
-			} else if (setLuaOperator.Contains(sc.ch)) {
+            } else if (sc.atLineStart && sc.Match('$')) {
+                sc.SetState(SCE_LUA_PREPROCESSOR);	// Obsolete since Lua 4.0, but still in old code
+            } else if (sc.atLineStart && sc.Match('@')) {
+                sc.SetState(SCE_LUA_ATTRIBUTE);	// Obsolete since Lua 4.0, but still in old code
+            } else if (setLuaOperator.Contains(sc.ch)) {
 				sc.SetState(SCE_LUA_OPERATOR);
 			}
 		}
@@ -509,7 +511,8 @@ LexicalClass lexicalClasses[] = {
 	17, "SCE_LUA_WORD6", "identifier", "Other keywords",
 	18, "SCE_LUA_WORD7", "identifier", "Other keywords",
 	19, "SCE_LUA_WORD8", "identifier", "Other keywords",
-	20, "SCE_LUA_LABEL", "label", "Labels",
+    20, "SCE_LUA_LABEL", "label", "Labels",
+    21, "SCE_LUA_ATTRIBUTE", "attribute", "Attributes",
 };
 
 }
